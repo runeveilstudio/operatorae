@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "operator://snapshot.manifest",
+  "title": "SnapshotManifest",
+  "description": "Pre-op snapshot manifest written by the sidecar (docs/02 §4)",
+  "type": "object",
+  "required": ["id", "version", "createdAt", "projectPath", "reason", "items", "aepCopy", "operatorVersion"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "version": { "const": 1 },
+    "createdAt": { "type": "integer", "minimum": 0 },
+    "projectPath": { "type": "string" },
+    "reason": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "hash": { "type": "string" }
+        }
+      }
+    },
+    "aepCopy": { "type": ["string", "null"] },
+    "operatorVersion": { "type": "string" }
+  }
+}

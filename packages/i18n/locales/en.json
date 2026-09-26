@@ -1,0 +1,11 @@
+{
+  "app.name": "OPERATOR",
+  "palette.placeholder": "Type a command, comp, layer or asset…",
+  "palette.empty": "No matching commands",
+  "run.dryRun": "Dry run",
+  "run.cancel": "Cancel (Esc)",
+  "status.host": "Host",
+  "status.project": "Project",
+  "status.limited": "Limited mode: some commands need the Node sidecar (docs/02 §7)",
+  "result.undoAvailable": "One Cmd+Z / Ctrl+Z undoes this batch"
+}

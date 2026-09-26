@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "operator://task.progress",
+  "title": "TaskProgressPayload",
+  "description": "TASK_PROGRESS_EVENT payload (CSXSEvent.data JSON)",
+  "type": "object",
+  "required": ["taskId", "done", "total", "phase"],
+  "additionalProperties": false,
+  "properties": {
+    "taskId": { "type": "string" },
+    "done": { "type": "integer", "minimum": 0 },
+    "total": { "type": "integer", "minimum": 0 },
+    "phase": { "const": "running" },
+    "message": { "type": "string" }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$comment": "AE/CEP quirk table (docs/06 §5 release step 1). Data, not code — capability probes consult it, docs/08 tracks verification on real AE.",
+  "version": 1,
+  "quirks": [
+    {
+      "id": "ae.layercollection-no-length",
+      "hosts": { "AEFT": "[22.0,99.9]" },
+      "summary": "LayerCollection has no .length; iterate comp.numLayers + comp.layer(i).",
+      "handled-by": ["@operator/ae-types", "apps/jsx/src/modules"]
+    },
+    {
+      "id": "ae.scheduletask-takes-code-string",
+      "hosts": { "AEFT": "[22.0,99.9]" },
+      "summary": "app.scheduleTask evaluates a global code string; closures cannot be scheduled — chunk continuations must address $._OP._tick(id).",
+      "handled-by": ["apps/jsx/src/env/ae-env.ts"]
+    },
+    {
+      "id": "cep.evalscript-synchronous",
+      "hosts": { "CEP": "[11,12]" },
+      "summary": "evalScript blocks the AE UI thread; batch work must be chunked with scheduled continuation (task protocol).",
+      "handled-by": ["apps/jsx/src/core/operator.ts", "ADR-0003"]
+    },
+    {
+      "id": "cep.evalfile-path-escaping",
+      "hosts": { "CEP": "[11,12]" },
+      "summary": "Windows backslashes must be escaped in $.evalFile source; paths travel as JSON.stringify literals.",
+      "handled-by": ["packages/host-adapter/src/cep.ts"]
+    },
+    {
+      "id": "cep.node-behind-flags",
+      "hosts": { "CEP": "[11,12]" },
+      "summary": "Node sidecar requires manifest CEFCommandLine flags; feature-detect `require`, degrade to Limited mode when absent.",
+      "handled-by": ["apps/panel/CSXS/manifest.xml", "docs/02 §7"]
+    },
+    {
+      "id": "extendscript.es3",
+      "hosts": { "AEFT": "[22.0,99.9]" },
+      "summary": "ExtendScript is ES3: no JSON, no Array.isArray/indexOf/trim/Object.keys, no getters; avoid reserved-word property names; no trailing commas.",
+      "handled-by": ["apps/jsx/src/core/json.ts", "apps/jsx/build.mjs", ".prettierrc.json"]
+    }
+  ]
+}

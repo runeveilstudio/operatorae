@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/ae-types" },
+    { "path": "packages/ae-mock" },
+    { "path": "packages/protocol" },
+    { "path": "packages/command-core" },
+    { "path": "packages/host-adapter" },
+    { "path": "packages/pathkit" },
+    { "path": "packages/parsers" },
+    { "path": "packages/i18n" },
+    { "path": "apps/jsx" },
+    { "path": "apps/sidecar" }
+  ]
+}

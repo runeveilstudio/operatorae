@@ -1,0 +1,10 @@
+{
+  "name": "@operator/ui-kit",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css"
+  }
+}

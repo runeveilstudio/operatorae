@@ -1,0 +1,27 @@
+/* Base primitives for OPERATOR panels (panel bundles these via vite). */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--op-bg);
+  color: var(--op-text);
+  font-family: var(--op-font);
+  font-size: var(--op-font-size);
+}
+
+.op-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.op-row {
+  display: flex;
+  align-items: center;
+  gap: var(--op-space-2);
+}

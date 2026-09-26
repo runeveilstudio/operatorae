@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "operator://task.request",
+  "title": "TaskRequest",
+  "description": "Panel -> ExtendScript task envelope (docs/02 §2.3 task protocol)",
+  "type": "object",
+  "required": ["id", "module", "fn"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "module": { "enum": ["system", "project", "comps", "layers"] },
+    "fn": { "type": "string", "minLength": 1 },
+    "args": { "type": ["object", "null"] },
+    "meta": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "dryRun": { "type": "boolean" },
+        "chunkSize": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "snapshotId": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

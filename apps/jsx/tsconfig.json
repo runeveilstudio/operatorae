@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "rootDir": "src",
+    "outDir": "dist-es2020"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../packages/ae-types" },
+    { "path": "../../packages/protocol" },
+    { "path": "../../packages/host-adapter" }
+  ]
+}

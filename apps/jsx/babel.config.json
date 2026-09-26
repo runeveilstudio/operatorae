@@ -1,0 +1,19 @@
+{
+  "sourceType": "script",
+  "compact": false,
+  "comments": false,
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": { "ie": "8" },
+        "modules": false,
+        "exclude": ["@babel/plugin-transform-typeof-symbol"]
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-member-expression-literals",
+    "@babel/plugin-transform-property-literals"
+  ]
+}

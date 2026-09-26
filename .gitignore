@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-es2020/
+*.zxp
+.DS_Store
+coverage/
+.vite/
+*.log
+tools/build/tmp/

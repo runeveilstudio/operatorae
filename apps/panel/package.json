@@ -1,0 +1,25 @@
+{
+  "name": "@operator/panel",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OPERATOR CEP panel (React UI + command core, docs/02 §2.1)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node copy-runtime.mjs"
+  },
+  "dependencies": {
+    "@operator/ae-types": "0.0.0",
+    "@operator/command-core": "0.0.0",
+    "@operator/host-adapter": "0.0.0",
+    "@operator/protocol": "0.0.0",
+    "@operator/ui-kit": "0.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@operator/ae-mock": "0.0.0",
+    "@operator/jsx": "0.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

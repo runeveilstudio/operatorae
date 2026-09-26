@@ -1,0 +1,23 @@
+{
+  "name": "@operator/jsx",
+  "version": "0.0.0",
+  "private": true,
+  "description": "ExtendScript runtime for OPERATOR (TS -> ES2020 -> ES3 two-pass build, docs/06 §2)",
+  "main": "./dist-es2020/index.js",
+  "types": "./dist-es2020/index.d.ts",
+  "exports": {
+    ".": "./dist-es2020/index.js",
+    "./inproc": "./dist-es2020/inproc.js"
+  },
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@operator/ae-types": "0.0.0",
+    "@operator/host-adapter": "0.0.0",
+    "@operator/protocol": "0.0.0"
+  },
+  "devDependencies": {
+    "@operator/ae-mock": "0.0.0"
+  }
+}

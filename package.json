@@ -1,0 +1,43 @@
+{
+  "name": "operator-ae",
+  "private": true,
+  "version": "0.0.1",
+  "description": "OPERATOR — Mission Control for After Effects (planning baseline: docs/01-07; build log: docs/08)",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build:libs && npm run build -w @operator/jsx && npm run build -w @operator/panel",
+    "build:libs": "tsc -b",
+    "typecheck": "tsc -b && tsc -p apps/panel --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,css,md,json}\" --ignore-path .gitignore",
+    "dev:install": "node tools/build/dev-install.mjs",
+    "dev:flags": "node tools/build/dev-flags.mjs",
+    "package:zxp": "node tools/build/package-zxp.mjs"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.26.0",
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-transform-member-expression-literals": "^7.25.9",
+    "@babel/plugin-transform-property-literals": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@types/node": "^20.19.43",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "ajv": "^8.17.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.15.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^5.4.11",
+    "vitest": "^3.0.0"
+  }
+}

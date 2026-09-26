@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "operator://task.result",
+  "title": "TaskResult",
+  "description": "Final task envelope; immediate return or TASK_DONE_EVENT payload",
+  "type": "object",
+  "required": ["taskId", "ok"],
+  "additionalProperties": false,
+  "properties": {
+    "taskId": { "type": "string" },
+    "ok": { "type": "boolean" },
+    "data": {},
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "message": { "type": "string" },
+          "target": { "type": "string" },
+          "index": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "undoToken": { "type": ["string", "null"] },
+    "durationMs": { "type": "integer", "minimum": 0 }
+  }
+}

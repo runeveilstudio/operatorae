@@ -1,0 +1,12 @@
+{
+  "name": "@operator/sidecar",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CEP Node sidecar: fs heavy lifting, snapshot store, (Phase 3: aerender/ffmpeg/ws hub)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@operator/pathkit": "0.0.0",
+    "@operator/protocol": "0.0.0"
+  }
+}

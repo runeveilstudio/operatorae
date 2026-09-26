@@ -1,0 +1,236 @@
+@import "@operator/ui-kit/tokens.css";
+@import "@operator/ui-kit/base.css";
+
+/* Panel-specific layout + widgets (Phase 0 skeleton; design-system work is
+   Phase 1 per docs/05). */
+.op-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--op-space-2) var(--op-space-3);
+  border-bottom: 1px solid var(--op-border);
+  background: var(--op-bg-raised);
+}
+
+.op-title {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.op-host {
+  color: var(--op-text-dim);
+}
+
+.op-bar {
+  padding: var(--op-space-3);
+  border-bottom: 1px solid var(--op-border);
+}
+
+.op-input {
+  width: 100%;
+  padding: var(--op-space-2);
+  background: var(--op-bg-input);
+  border: 1px solid var(--op-border);
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+  font-size: var(--op-font-size);
+}
+
+.op-list {
+  list-style: none;
+  margin: var(--op-space-2) 0 0;
+  padding: 0;
+}
+
+.op-item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: var(--op-space-2);
+  padding: var(--op-space-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.op-item:hover {
+  background: var(--op-bg-input);
+}
+
+.op-item-id {
+  color: var(--op-text-dim);
+  font-family: var(--op-mono);
+  font-size: 10px;
+}
+
+.op-detail {
+  margin-top: var(--op-space-2);
+}
+
+.op-params {
+  display: flex;
+  flex-direction: column;
+  gap: var(--op-space-2);
+  margin: var(--op-space-2) 0;
+}
+
+.op-params label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--op-text-dim);
+}
+
+.op-params select,
+.op-params input {
+  padding: var(--op-space-1) var(--op-space-2);
+  background: var(--op-bg-input);
+  border: 1px solid var(--op-border);
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+}
+
+.op-check {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.op-run,
+.op-back {
+  padding: var(--op-space-1) var(--op-space-3);
+  background: var(--op-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--op-radius);
+  cursor: pointer;
+}
+
+.op-run:hover {
+  background: var(--op-accent-hover);
+}
+
+.op-run:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.op-back {
+  background: var(--op-bg-input);
+  color: var(--op-text);
+}
+
+.op-progress {
+  margin-top: var(--op-space-2);
+}
+
+.op-progress-track {
+  height: 4px;
+  background: var(--op-bg-input);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.op-progress-fill {
+  height: 100%;
+  background: var(--op-accent);
+  transition: width 120ms linear;
+}
+
+.op-result {
+  margin-top: var(--op-space-2);
+  padding: var(--op-space-2);
+  border: 1px solid var(--op-success);
+  border-radius: var(--op-radius);
+}
+
+.op-result-failed {
+  border-color: var(--op-danger);
+}
+
+.op-json {
+  margin: var(--op-space-2) 0 0;
+  padding: var(--op-space-2);
+  background: var(--op-bg-input);
+  border-radius: var(--op-radius);
+  font-family: var(--op-mono);
+  font-size: 10px;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.op-errors {
+  margin: var(--op-space-1) 0 0;
+  padding-left: var(--op-space-4);
+  color: var(--op-warning);
+}
+
+.op-error {
+  margin-top: var(--op-space-2);
+  padding: var(--op-space-2);
+  border: 1px solid var(--op-danger);
+  border-radius: var(--op-radius);
+  color: var(--op-danger);
+}
+
+.op-status {
+  padding: var(--op-space-3);
+  overflow: auto;
+}
+
+.op-status h3 {
+  margin: var(--op-space-2) 0 var(--op-space-1);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--op-text-dim);
+}
+
+.op-kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--op-space-3);
+  margin: 0;
+}
+
+.op-kv dt {
+  color: var(--op-text-dim);
+}
+
+.op-kv dd {
+  margin: 0;
+  font-family: var(--op-mono);
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.op-caps,
+.op-audit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.op-cap-ok {
+  color: var(--op-success);
+}
+
+.op-cap-missing {
+  color: var(--op-warning);
+}
+
+.op-audit li,
+.op-dim {
+  color: var(--op-text-dim);
+}
+
+.op-boot {
+  padding: var(--op-space-4);
+  color: var(--op-text-dim);
+}
+
+.op-boot-error {
+  color: var(--op-danger);
+}

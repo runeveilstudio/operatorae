@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="12.0" ExtensionBundleId="com.operator.panel" ExtensionBundleVersion="0.0.1" ExtensionBundleName="OPERATOR">
+  <ExtensionList>
+    <Extension Id="com.operator.panel.main" Version="0.0.1" />
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      <!-- docs/07 #4: AE 2022 (22.x) floor; current major ceiling. -->
+      <Host Name="AEFT" Version="[22.0,99.9]" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <!-- CEP 11 floor (AE 2022); CEP 12 features used behind detection. -->
+      <RequiredRuntime Name="CSXS" Version="11.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="com.operator.panel.main">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <CEFCommandLine>
+            <Parameter>--allow-file-access</Parameter>
+            <Parameter>--allow-file-access-from-files</Parameter>
+            <!-- Node sidecar context behind flags (quirk cep.node-behind-flags) -->
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--mixed-context</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>OPERATOR</Menu>
+          <Geometry>
+            <Size>
+              <Height>620</Height>
+              <Width>440</Width>
+            </Size>
+            <MinSize>
+              <Height>320</Height>
+              <Width>300</Width>
+            </MinSize>
+          </Geometry>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>
