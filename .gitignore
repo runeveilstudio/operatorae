@@ -7,3 +7,5 @@ coverage/
 .vite/
 *.log
 tools/build/tmp/
+__MACOSX/
+.vscode/

@@ -10,7 +10,47 @@
  * `apps/jsx/test/protocol-parity.test.ts` enforces the two stay in sync.
  */
 
-export type TaskModuleId = "system" | "project" | "comps" | "layers";
+/**
+ * Every domain in docs/03 has a runtime module (docs/02 §2.3 module map).
+ * Adding a module here requires the matching handler table in apps/jsx
+ * (`handlerTable()`), the ES3 mirror, and the tools/schema enum to agree.
+ */
+export type TaskModuleId =
+  | "system"
+  | "project"
+  | "assets"
+  | "comps"
+  | "layers"
+  | "keys"
+  | "text"
+  | "shapes"
+  | "effects"
+  | "expressions"
+  | "data"
+  | "render"
+  | "timeline"
+  | "color"
+  | "snapshot"
+  | "ops";
+
+export const TASK_MODULE_IDS: readonly TaskModuleId[] = [
+  "system",
+  "project",
+  "assets",
+  "comps",
+  "layers",
+  "keys",
+  "text",
+  "shapes",
+  "effects",
+  "expressions",
+  "data",
+  "render",
+  "timeline",
+  "color",
+  "snapshot",
+  "ops"
+] as const;
 
 export interface TaskRequest {
   /** Unique per execution; used for progress/cancel correlation. */
@@ -73,6 +113,8 @@ export const TASK_ERROR_CODES = {
   ARG_INVALID: "TASK_ARG_INVALID",
   CAPABILITY_MISSING: "TASK_CAPABILITY_MISSING",
   HOST_ERROR: "TASK_HOST_ERROR",
+  /** A single batch item was intentionally skipped (locked layer, no change). */
+  ITEM_SKIPPED: "TASK_ITEM_SKIPPED",
   PROTOCOL: "TASK_PROTOCOL"
 } as const;
 

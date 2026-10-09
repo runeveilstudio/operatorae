@@ -37,9 +37,24 @@ async function createAdapter(): Promise<HostAdapter> {
           { name: "bg", selected: true },
           { name: "logo", selected: true },
           { name: "locked matte", selected: true, locked: true },
-          { name: "headline text" },
+          {
+            name: "headline text",
+            props: [
+              { name: "Source Text", matchName: "ADBE Text Document", expression: '"OPERATOR"' }
+            ]
+          },
           { name: "subhead text" },
-          { name: "vignette" }
+          {
+            name: "vignette",
+            props: [
+              {
+                name: "Opacity",
+                matchName: "ADBE Opacity",
+                expression: "wiggle(2, 10",
+                expressionError: "After Effects error: syntax error"
+              }
+            ]
+          }
         ]
       },
       { name: "TITLE_9x16", layers: [{ name: "bg" }, { name: "headline text" }] },
@@ -49,8 +64,15 @@ async function createAdapter(): Promise<HostAdapter> {
       { name: "logo.ai" },
       { name: "hero_shot_010.mov" },
       { name: "hero_shot_011.mov" },
-      { name: "missing_render.mov", missing: true }
+      { name: "missing_render.mov", missing: true },
+      { name: "Solid Black", solid: true }
     ]
   });
+  // Wire layer sources so the Asset Doctor's "unused" check has real usage:
+  // bg pulls hero_shot_010, logo pulls logo.ai; hero_shot_011 + the solid stay
+  // unused and missing_render is missing (also unused — both are true).
+  const byName = (n: string) => env.items.find((i) => i.name === n) ?? null;
+  env.comps[0]._layers[0].source = byName("hero_shot_010.mov");
+  env.comps[0]._layers[1].source = byName("logo.ai");
   return new InProcessHostAdapter(env.app, "Dev mock (no CEP)");
 }

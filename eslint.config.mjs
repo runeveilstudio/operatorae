@@ -16,6 +16,15 @@ export default tseslint.config(
     files: ["**/*.ts", "**/*.tsx"]
   })),
   {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }
+      ]
+    }
+  },
+  {
     files: ["apps/jsx/src/**/*.ts", "packages/ae-mock/src/**/*.ts"],
     languageOptions: {
       globals: {

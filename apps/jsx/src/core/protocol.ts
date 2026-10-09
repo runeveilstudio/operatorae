@@ -31,10 +31,58 @@ export const CAPABILITIES = {
   UNDO_GROUPS: "ae.undoGroups",
   SCHEDULE_TASK: "ae.scheduleTask",
   ACTIVE_COMP: "ae.activeComp",
-  EVENTS: "cep.plugplugEvents"
+  EVENTS: "cep.plugplugEvents",
+  ITEMS: "ae.items",
+  LAYERS: "ae.layers",
+  LAYER_TOGGLES: "ae.layerToggles",
+  LAYER_LABELS: "ae.layerLabels",
+  KEYFRAMES: "ae.keyframes",
+  TEXT_LAYERS: "ae.textLayers",
+  SHAPES: "ae.shapes",
+  EFFECTS: "ae.effects",
+  EXPRESSIONS: "ae.expressions",
+  MARKERS: "ae.markers",
+  RENDER_QUEUE: "ae.renderQueue",
+  LABELS: "ae.labels",
+  ESSENTIAL_PROPERTIES: "ae.essentialProperties"
 } as const;
 
-export type TaskModuleId = "system" | "project" | "comps" | "layers";
+export type TaskModuleId =
+  | "system"
+  | "project"
+  | "assets"
+  | "comps"
+  | "layers"
+  | "keys"
+  | "text"
+  | "shapes"
+  | "effects"
+  | "expressions"
+  | "data"
+  | "render"
+  | "timeline"
+  | "color"
+  | "snapshot"
+  | "ops";
+
+export const TASK_MODULE_IDS: readonly TaskModuleId[] = [
+  "system",
+  "project",
+  "assets",
+  "comps",
+  "layers",
+  "keys",
+  "text",
+  "shapes",
+  "effects",
+  "expressions",
+  "data",
+  "render",
+  "timeline",
+  "color",
+  "snapshot",
+  "ops"
+] as const;
 
 export interface TaskMeta {
   dryRun?: boolean;

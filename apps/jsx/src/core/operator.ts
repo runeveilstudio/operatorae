@@ -124,7 +124,7 @@ export function createOperator(env: OperatorEnv, handlers: HandlerTable): Operat
   function safeBool(fn: () => boolean): boolean {
     try {
       return fn() === true;
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   }
@@ -176,7 +176,7 @@ export function createOperator(env: OperatorEnv, handlers: HandlerTable): Operat
       const parsed = parse(requestJson);
       if (parsed === null || typeof parsed !== "object") throw new Error("not an object");
       request = parsed as TaskRequest;
-    } catch (e) {
+    } catch (_e) {
       return failEnvelope("", TASK_ERROR_CODES.PROTOCOL, "Malformed task request JSON");
     }
     if (typeof request.id !== "string" || request.id === "") {
@@ -341,7 +341,7 @@ export function createOperator(env: OperatorEnv, handlers: HandlerTable): Operat
     if (state.undoOpened) {
       try {
         env.app.endUndoGroup();
-      } catch (e) {
+      } catch (_e) {
         // undo bookkeeping must never mask the task result
       }
     }
@@ -405,7 +405,7 @@ export function decodeProjectPath(fileURI: string): string | null {
   if (s.indexOf("file://") === 0) s = s.substring("file://".length);
   try {
     return decodeURIComponent(s);
-  } catch (e) {
+  } catch (_e) {
     return s;
   }
 }

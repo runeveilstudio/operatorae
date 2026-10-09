@@ -234,3 +234,86 @@
 .op-boot-error {
   color: var(--op-danger);
 }
+
+/* Asset Doctor (docs/03 §1) */
+.op-doctor {
+  padding: var(--op-space-3);
+  border-bottom: 1px solid var(--op-border);
+}
+
+.op-doctor-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.op-doctor h3 {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--op-text-dim);
+}
+
+.op-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--op-space-2);
+  margin-top: var(--op-space-2);
+}
+
+.op-chip {
+  padding: 2px var(--op-space-2);
+  border: 1px solid var(--op-success);
+  border-radius: var(--op-radius);
+  color: var(--op-success);
+  font-size: 10px;
+  font-family: var(--op-mono);
+}
+
+.op-chip-bad {
+  border-color: var(--op-danger);
+  color: var(--op-danger);
+}
+
+.op-doctor-clean {
+  margin: var(--op-space-2) 0 0;
+  color: var(--op-success);
+}
+
+.op-doctor-section {
+  margin-top: var(--op-space-3);
+}
+
+.op-findings {
+  list-style: none;
+  margin: var(--op-space-1) 0 0;
+  padding: 0;
+}
+
+.op-finding {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--op-space-1) 0;
+  border-bottom: 1px solid var(--op-border);
+}
+
+.op-finding:last-child {
+  border-bottom: none;
+}
+
+.op-finding-title {
+  font-size: 11px;
+}
+
+.op-finding-meta {
+  color: var(--op-text-dim);
+  font-family: var(--op-mono);
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.op-doctor .op-dim {
+  margin: var(--op-space-2) 0 0;
+}

@@ -5,6 +5,7 @@ import { getAdapter } from "./bridge";
 import { createCatalog } from "./commands/catalog";
 import OperatorBar from "./views/OperatorBar";
 import StatusPanel from "./views/StatusPanel";
+import AssetDoctor from "./views/AssetDoctor";
 
 interface BootState {
   adapter: HostAdapter;
@@ -51,6 +52,7 @@ export default function App() {
         </span>
       </header>
       <OperatorBar runner={runner} registry={registry} info={boot.info} />
+      <AssetDoctor runner={runner} />
       <StatusPanel info={boot.info} audit={audit} registry={registry} />
     </div>
   );

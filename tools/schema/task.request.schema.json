@@ -8,7 +8,26 @@
   "additionalProperties": false,
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "module": { "enum": ["system", "project", "comps", "layers"] },
+    "module": {
+      "enum": [
+        "system",
+        "project",
+        "assets",
+        "comps",
+        "layers",
+        "keys",
+        "text",
+        "shapes",
+        "effects",
+        "expressions",
+        "data",
+        "render",
+        "timeline",
+        "color",
+        "snapshot",
+        "ops"
+      ]
+    },
     "fn": { "type": "string", "minLength": 1 },
     "args": { "type": ["object", "null"] },
     "meta": {

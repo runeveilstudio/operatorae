@@ -1,10 +1,11 @@
 import { CommandRegistry } from "@operator/command-core";
 
 /**
- * Phase 0 command catalog — the three commands that prove the Host Adapter +
- * task protocol (docs/05 Phase 0 exit criteria), registered exactly as the
- * command-core contract requires: id, scope predicate, params, undo policy,
- * audit metadata (docs/02 §2.2). Grows to ~120 commands by MVP (docs/03).
+ * Phase 0/1 command catalog — the Phase 0 commands that prove the Host
+ * Adapter + task protocol (docs/05 Phase 0 exit criteria), registered
+ * exactly as the command-core contract requires: id, scope predicate,
+ * params, undo policy, audit metadata (docs/02 §2.2). Grows to ~120
+ * commands by MVP (docs/03).
  */
 export function createCatalog(): CommandRegistry {
   const registry = new CommandRegistry();
@@ -46,6 +47,18 @@ export function createCatalog(): CommandRegistry {
         { key: "scope", type: "enum", enumValues: ["selection", "comp"], def: "selection" },
         { key: "pattern", type: "object", required: true, hint: "mode: prefix|suffix|replace|number" }
       ]
+    },
+    {
+      id: "assets.doctorScan",
+      title: "Asset Doctor: scan project",
+      module: "assets",
+      fn: "doctorScan",
+      scope: "project",
+      mutating: false,
+      batch: true,
+      category: "Asset Doctor",
+      description:
+        "One-click project audit: missing media, unused footage, broken expressions. Read-only, chunked with progress; findings feed the fix-commands (docs/03 §1)."
     }
   ]);
   return registry;

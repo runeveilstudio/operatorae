@@ -25,13 +25,12 @@ export class InProcessHostAdapter extends BaseHostAdapter {
     handlers?: HandlerTable
   ) {
     super();
-    const self = this;
     const env: OperatorEnv = {
       app: app,
       platform: platform,
       eventsAvailable: true,
       emit: (type, payloadJson) => {
-        if (self.handle) self.handle(type, payloadJson);
+        if (this.handle) this.handle(type, payloadJson);
       },
       scheduleTick: (_taskId, continueFn) => {
         setTimeout(() => continueFn(), 0);

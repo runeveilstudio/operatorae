@@ -5,7 +5,7 @@ import Ajv from "ajv";
 import { makeAccepted, makeOk, type TaskRequest } from "@operator/protocol";
 import { createMockAeEnv } from "@operator/ae-mock";
 import { handlerTable } from "@operator/jsx";
-import { createOperator } from "@operator/jsx";
+import { createOperator } from "@operator/jsx/core/operator.js";
 
 /**
  * Single source of truth (docs/06 §2): the schemas must accept everything
