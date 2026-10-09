@@ -85,12 +85,20 @@
 }
 
 .op-params select,
-.op-params input {
+.op-params input,
+.op-params textarea {
   padding: var(--op-space-1) var(--op-space-2);
   background: var(--op-bg-input);
   border: 1px solid var(--op-border);
   border-radius: var(--op-radius);
   color: var(--op-text);
+  font-family: inherit;
+}
+
+.op-params textarea {
+  font-family: var(--op-mono);
+  font-size: 10px;
+  resize: vertical;
 }
 
 .op-check {

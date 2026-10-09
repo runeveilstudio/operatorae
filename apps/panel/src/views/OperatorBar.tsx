@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CommandRegistry, CommandRunner, RunOutcome } from "@operator/command-core";
+import type { CommandRegistry, CommandRunner, ParamSpec, RunOutcome } from "@operator/command-core";
 import type { HostInfo } from "@operator/host-adapter";
 import type { TaskProgressPayload } from "@operator/protocol";
 
@@ -22,6 +22,8 @@ export default function OperatorBar({ runner, registry, info }: Props) {
   const [find, setFind] = useState("");
   const [replace, setReplace] = useState("");
   const [dryRun, setDryRun] = useState(true);
+  /** Generic param values keyed by ParamSpec.key (params render from the catalog). */
+  const [paramValues, setParamValues] = useState<Record<string, string | boolean>>({});
 
   const results = registry.search(query, 8);
   const selected = selectedId ? registry.get(selectedId) : null;
@@ -30,15 +32,66 @@ export default function OperatorBar({ runner, registry, info }: Props) {
     return runner.onProgress((p) => setProgress(p));
   }, [runner]);
 
-  function buildArgs(id: string): Record<string, unknown> {
+  useEffect(() => {
+    if (selectedId === null) {
+      setParamValues({});
+      return;
+    }
+    const def = registry.get(selectedId);
+    const init: Record<string, string | boolean> = {};
+    for (const p of def.params ?? []) {
+      if (p.type === "boolean") init[p.key] = p.def === true;
+      else if (p.def !== undefined && p.def !== null) init[p.key] = String(p.def);
+      else init[p.key] = "";
+    }
+    setParamValues(init);
+  }, [selectedId, registry]);
+
+  /** Args for the generic param renderer; null on a validation error. */
+  function buildGenericArgs(params: ParamSpec[]): Record<string, unknown> | null {
+    const args: Record<string, unknown> = {};
+    for (const p of params) {
+      const v = paramValues[p.key];
+      if (v === "" || v === undefined) {
+        if (p.required) {
+          setError(`Parameter "${p.key}" is required`);
+          return null;
+        }
+        continue; // omitted optionals keep their host-side defaults
+      }
+      if (p.type === "number") {
+        const n = Number(v);
+        if (!isFinite(n)) {
+          setError(`Parameter "${p.key}" must be a number`);
+          return null;
+        }
+        args[p.key] = n;
+      } else if (p.type === "object") {
+        try {
+          args[p.key] = JSON.parse(String(v));
+        } catch (e) {
+          setError(`Parameter "${p.key}" is not valid JSON: ${String((e as Error)?.message ?? e)}`);
+          return null;
+        }
+      } else {
+        args[p.key] = v;
+      }
+    }
+    return args;
+  }
+
+  function buildArgs(id: string): Record<string, unknown> | null {
     if (id === "layers.renameBatch") {
+      // Hand-rolled until the pattern builder gets its own dedicated form.
       const pattern =
         patternMode === "replace"
           ? { mode: patternMode, find, replace }
           : { mode: patternMode, text: patternText };
       return { scope, pattern };
     }
-    return {};
+    const def = registry.get(id);
+    if (!def.params || def.params.length === 0) return {};
+    return buildGenericArgs(def.params);
   }
 
   async function run(id: string, runDryRun: boolean): Promise<void> {
@@ -46,8 +99,13 @@ export default function OperatorBar({ runner, registry, info }: Props) {
     setError(null);
     setOutcome(null);
     setProgress(null);
+    const args = buildArgs(id);
+    if (args === null) {
+      setBusy(false);
+      return;
+    }
     try {
-      const result = await runner.run(id, buildArgs(id), { dryRun: runDryRun, chunkSize: 2 });
+      const result = await runner.run(id, args, { dryRun: runDryRun, chunkSize: 2 });
       setOutcome(result);
     } catch (e) {
       setError(String((e as Error)?.message ?? e));
@@ -137,6 +195,94 @@ export default function OperatorBar({ runner, registry, info }: Props) {
               </label>
             </div>
           )}
+          {selected.id !== "layers.renameBatch" && selected.params && selected.params.length > 0 && (
+            <div className="op-params">
+              {selected.params.map((p) => {
+                const value = paramValues[p.key];
+                const setParam = (v: string | boolean) =>
+                  setParamValues((prev) => ({ ...prev, [p.key]: v }));
+                const labelText = `${p.key}${p.required ? " *" : ""}`;
+                if (p.type === "enum") {
+                  return (
+                    <label key={p.key}>
+                      {labelText}
+                      <select value={String(value ?? "")} onChange={(e) => setParam(e.target.value)}>
+                        {(p.enumValues ?? []).map((v) => (
+                          <option key={v} value={v}>
+                            {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  );
+                }
+                if (p.type === "boolean") {
+                  return (
+                    <label key={p.key} className="op-check">
+                      <input
+                        type="checkbox"
+                        checked={value === true}
+                        onChange={(e) => setParam(e.target.checked)}
+                      />
+                      {p.key}
+                    </label>
+                  );
+                }
+                if (p.type === "object") {
+                  return (
+                    <label key={p.key}>
+                      {labelText} (JSON)
+                      <textarea
+                        rows={2}
+                        placeholder={p.hint ?? "JSON object"}
+                        value={String(value ?? "")}
+                        onChange={(e) => setParam(e.target.value)}
+                      />
+                    </label>
+                  );
+                }
+                if (p.type === "number") {
+                  return (
+                    <label key={p.key}>
+                      {labelText}
+                      <input
+                        type="number"
+                        value={String(value ?? "")}
+                        placeholder={p.hint ?? ""}
+                        onChange={(e) => setParam(e.target.value)}
+                      />
+                    </label>
+                  );
+                }
+                return (
+                  <label key={p.key}>
+                    {labelText}
+                    <input
+                      placeholder={p.hint ?? ""}
+                      value={String(value ?? "")}
+                      onChange={(e) => setParam(e.target.value)}
+                    />
+                  </label>
+                );
+              })}
+              {selected.mutating && (
+                <label className="op-check">
+                  <input type="checkbox" checked={dryRun} onChange={(e) => setDryRun(e.target.checked)} />
+                  Dry run (preview only)
+                </label>
+              )}
+            </div>
+          )}
+          {selected.id !== "layers.renameBatch" &&
+            (!selected.params || selected.params.length === 0) &&
+            selected.mutating && (
+              <div className="op-params">
+                <label className="op-check">
+                  <input type="checkbox" checked={dryRun} onChange={(e) => setDryRun(e.target.checked)} />
+                  Dry run (preview only)
+                </label>
+              </div>
+            )}
           <div className="op-row">
             <button className="op-run" disabled={busy} onClick={() => run(selected.id, dryRun)}>
               {dryRun && selected.mutating ? "Preview" : "Run"}
