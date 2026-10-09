@@ -6,6 +6,7 @@ import { projectHandlers } from "./modules/project.js";
 import { compsHandlers } from "./modules/comps.js";
 import { layersHandlers } from "./modules/layers.js";
 import { doctorHandlers } from "./modules/doctor.js";
+import { colorHandlers } from "./modules/color.js";
 import { stringify } from "./core/json.js";
 
 export function handlerTable(): HandlerTable {
@@ -14,7 +15,8 @@ export function handlerTable(): HandlerTable {
     project: projectHandlers(),
     comps: compsHandlers(),
     layers: layersHandlers(),
-    assets: doctorHandlers()
+    assets: doctorHandlers(),
+    color: colorHandlers()
   };
 }
 

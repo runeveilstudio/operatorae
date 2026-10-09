@@ -101,6 +101,8 @@ export interface MockFootageSpec {
   missing?: boolean;
   /** No `file` at all (a solid, for example). */
   solid?: boolean;
+  /** Initial [r,g,b] 0..1 for solids; defaults to black. */
+  solidColor?: number[];
   width?: number;
   height?: number;
   duration?: number;

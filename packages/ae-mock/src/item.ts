@@ -89,6 +89,8 @@ export class MockFootage extends MockItem implements AeFootageItem {
   frameRate: number;
   hasVideo: boolean;
   hasAudio: boolean;
+  /** Solid sources carry the fill color (real AE: mainSource.color). */
+  mainSource: { color?: number[] } | null;
 
   constructor(
     id: number,
@@ -102,11 +104,13 @@ export class MockFootage extends MockItem implements AeFootageItem {
       frameRate?: number;
       hasVideo?: boolean;
       hasAudio?: boolean;
+      solidColor?: number[];
     } = {}
   ) {
     super(id, name);
     this.file = opts.file ?? null;
     if (opts.solid === true) this.typeName = "Solid";
+    this.mainSource = opts.solid === true ? { color: opts.solidColor ?? [0, 0, 0] } : null;
     this.width = opts.width ?? 1920;
     this.height = opts.height ?? 1080;
     this.duration = opts.duration ?? 10;

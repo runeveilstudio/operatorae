@@ -53,6 +53,9 @@ export interface AeFootageItem extends AeItem {
   hasAudio: boolean;
   /** Re-points the main source at `file` (the relink primitive, docs/03 §1). */
   replace(file: AeFile): void;
+  /** Solid sources expose [r,g,b] 0..1 (real AE: mainSource.color); other
+   * sources leave `color` undefined — read defensively. */
+  mainSource: { color?: number[] } | null;
 }
 
 export interface AeMarkerValue {

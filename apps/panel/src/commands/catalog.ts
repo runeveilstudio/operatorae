@@ -109,6 +109,23 @@ export function createCatalog(): CommandRegistry {
       params: [{ key: "code", type: "string", required: true }]
     },
     {
+      id: "color.applyHex",
+      title: "Apply hex color",
+      module: "color",
+      fn: "applyHex",
+      scope: "selection",
+      mutating: true,
+      batch: true,
+      category: "Color",
+      description:
+        "#ff0044 → apply to the selection: text layers get a Source Text fill; solid-backed layers recolor their solid source (every layer sharing it follows, as AE does).",
+      params: [
+        { key: "hex", type: "string", required: true, hint: "#rgb or #rrggbb" },
+        { key: "scope", type: "enum", enumValues: ["selection", "comp"], def: "selection" },
+        { key: "compId", type: "number", hint: "required when scope is comp" }
+      ]
+    },
+    {
       id: "assets.doctorScan",
       title: "Asset Doctor: scan project",
       module: "assets",

@@ -255,7 +255,8 @@ function buildFootage(spec: MockFootageSpec, id: number): MockFootage {
     duration: spec.duration,
     frameRate: spec.frameRate,
     hasVideo: spec.hasVideo,
-    hasAudio: spec.hasAudio
+    hasAudio: spec.hasAudio,
+    solidColor: spec.solidColor
   });
   if (spec.label !== undefined) footage.label = spec.label;
   if (spec.comment !== undefined) footage.comment = spec.comment;
