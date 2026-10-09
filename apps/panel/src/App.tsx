@@ -6,6 +6,7 @@ import { createCatalog } from "./commands/catalog";
 import OperatorBar from "./views/OperatorBar";
 import StatusPanel from "./views/StatusPanel";
 import AssetDoctor from "./views/AssetDoctor";
+import Console from "./views/Console";
 
 interface BootState {
   adapter: HostAdapter;
@@ -53,6 +54,7 @@ export default function App() {
       </header>
       <OperatorBar runner={runner} registry={registry} info={boot.info} />
       <AssetDoctor runner={runner} />
+      <Console runner={runner} />
       <StatusPanel info={boot.info} audit={audit} registry={registry} />
     </div>
   );

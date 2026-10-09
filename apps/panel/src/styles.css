@@ -379,3 +379,88 @@
 .op-relink-btn:hover {
   border-color: var(--op-accent);
 }
+
+/* Scripting console (docs/03 §13) */
+.op-console {
+  padding: var(--op-space-3);
+  border-bottom: 1px solid var(--op-border);
+}
+
+.op-console-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.op-console h3 {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--op-text-dim);
+}
+
+.op-console-input {
+  width: 100%;
+  margin-top: var(--op-space-2);
+  padding: var(--op-space-2);
+  background: var(--op-bg-input);
+  border: 1px solid var(--op-border);
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+  font-family: var(--op-mono);
+  font-size: 11px;
+  resize: vertical;
+}
+
+.op-console-input:focus {
+  outline: none;
+  border-color: var(--op-accent);
+}
+
+.op-console .op-dim {
+  margin: var(--op-space-1) 0 0;
+  font-size: 10px;
+}
+
+.op-console-history {
+  list-style: none;
+  margin: var(--op-space-2) 0 0;
+  padding: 0;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.op-console-entry {
+  padding: var(--op-space-1) 0;
+  border-bottom: 1px solid var(--op-border);
+}
+
+.op-console-entry:last-child {
+  border-bottom: none;
+}
+
+.op-console-code,
+.op-console-result {
+  margin: 0;
+  padding: var(--op-space-1) var(--op-space-2);
+  background: var(--op-bg-input);
+  border-radius: var(--op-radius);
+  font-family: var(--op-mono);
+  font-size: 10px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.op-console-result {
+  margin-top: 2px;
+  color: var(--op-text-dim);
+}
+
+.op-console-error .op-console-code {
+  border-color: var(--op-danger);
+}
+
+.op-console-error-text {
+  color: var(--op-danger);
+}

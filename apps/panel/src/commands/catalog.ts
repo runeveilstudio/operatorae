@@ -96,6 +96,19 @@ export function createCatalog(): CommandRegistry {
       params: [{ key: "compId", type: "number", hint: "defaults to the active comp" }]
     },
     {
+      id: "system.eval",
+      title: "Console: evaluate script",
+      module: "system",
+      fn: "eval",
+      scope: "none",
+      mutating: true,
+      batch: false,
+      category: "Console",
+      description:
+        "Evaluate an ExtendScript snippet against the AE DOM. Side effects land in one undo group; results degrade to a display string when they cannot serialize.",
+      params: [{ key: "code", type: "string", required: true }]
+    },
+    {
       id: "assets.doctorScan",
       title: "Asset Doctor: scan project",
       module: "assets",
