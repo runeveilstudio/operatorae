@@ -58,7 +58,32 @@ export function createCatalog(): CommandRegistry {
       batch: true,
       category: "Asset Doctor",
       description:
-        "One-click project audit: missing media, unused footage, broken expressions. Read-only, chunked with progress; findings feed the fix-commands (docs/03 §1)."
+        "One-click project audit: missing media, unused footage, duplicate sources, broken expressions. Read-only, chunked with progress; findings feed the fix-commands (docs/03 §1)."
+    },
+    {
+      id: "assets.relinkMissing",
+      title: "Asset Doctor: relink footage",
+      module: "assets",
+      fn: "relinkMissing",
+      scope: "project",
+      mutating: true,
+      batch: true,
+      category: "Asset Doctor",
+      description:
+        "Re-point footage items at new file paths by item id. Validates targets on the host, dry-run previews, one undo step reverts the whole batch.",
+      params: [{ key: "entries", type: "object", required: true, hint: "[{ itemId, path }]" }]
+    },
+    {
+      id: "assets.removeUnused",
+      title: "Asset Doctor: remove unused footage",
+      module: "assets",
+      fn: "removeUnused",
+      scope: "project",
+      mutating: true,
+      batch: true,
+      category: "Asset Doctor",
+      description:
+        "Delete every footage/solid item no layer references. Dry-run preview first; one undo step reverts the whole batch."
     }
   ]);
   return registry;

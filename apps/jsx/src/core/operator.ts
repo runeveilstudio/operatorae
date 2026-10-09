@@ -1,4 +1,4 @@
-import type { AeApplication, AeCompItem, AeItem } from "@operator/ae-types";
+import type { AeApplication, AeCompItem, AeFile, AeItem } from "@operator/ae-types";
 import {
   CAPABILITIES,
   PROTOCOL_VERSION,
@@ -33,6 +33,9 @@ export interface OperatorEnv {
   emit(type: string, payloadJson: string): void;
   scheduleTick(taskId: string, continueFn: () => void): void;
   now(): number;
+  /** Host File constructor for relink-style handlers: real AE's `new File`,
+   * MockFile everywhere else. Keeps ES3 code free of host globals. */
+  makeFile(fsName: string): AeFile;
 }
 
 export interface HandlerCtx {

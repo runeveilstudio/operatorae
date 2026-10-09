@@ -1,4 +1,5 @@
 import type { AeApplication } from "@operator/ae-types";
+import { MockFile } from "@operator/ae-mock";
 import { BaseHostAdapter, type HostInfo } from "@operator/host-adapter";
 import {
   TASK_DONE_EVENT,
@@ -35,7 +36,8 @@ export class InProcessHostAdapter extends BaseHostAdapter {
       scheduleTick: (_taskId, continueFn) => {
         setTimeout(() => continueFn(), 0);
       },
-      now: () => Date.now()
+      now: () => Date.now(),
+      makeFile: (fsName) => new MockFile(fsName)
     };
     this.op = createOperator(env, handlers ?? handlerTable());
   }

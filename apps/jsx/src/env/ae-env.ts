@@ -1,4 +1,4 @@
-import type { AeApplication } from "@operator/ae-types";
+import type { AeApplication, AeFile } from "@operator/ae-types";
 import { createPlugPlugEventSink } from "../core/events.js";
 import type { OperatorEnv } from "../core/operator.js";
 import { stringify } from "../core/json.js";
@@ -13,6 +13,11 @@ export interface AeEnvHandle {
   env: OperatorEnv;
   fireTick(taskId: string): boolean;
 }
+
+/** ExtendScript's File constructor. Tests type a DOM File too; the cast keeps
+ * only the (path) signature the runtime actually uses. */
+type EsFileCtor = { new (path: string): AeFile };
+const EsFile = File as unknown as EsFileCtor;
 
 export function createAeEnv(app: AeApplication, platform: string): AeEnvHandle {
   const ticks: Record<string, () => void> = {};
@@ -35,7 +40,8 @@ export function createAeEnv(app: AeApplication, platform: string): AeEnvHandle {
       ticks[taskId] = continueFn;
       app.scheduleTask("$._OP._tick(" + stringify(taskId) + ")", 0, false);
     },
-    now: () => new Date().getTime()
+    now: () => new Date().getTime(),
+    makeFile: (fsName) => new EsFile(fsName)
   };
   return { env: env, fireTick: fireTick };
 }

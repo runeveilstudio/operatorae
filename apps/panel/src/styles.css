@@ -317,3 +317,65 @@
 .op-doctor .op-dim {
   margin: var(--op-space-2) 0 0;
 }
+
+.op-doctor-action {
+  margin-top: var(--op-space-2);
+  padding: var(--op-space-1) var(--op-space-2);
+  border: 1px solid var(--op-success);
+  border-radius: var(--op-radius);
+  color: var(--op-success);
+  font-size: 11px;
+}
+
+.op-doctor-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--op-space-2);
+}
+
+.op-doctor-section-head h3 {
+  margin: 0;
+}
+
+.op-doctor-actions {
+  display: flex;
+  gap: var(--op-space-2);
+}
+
+.op-doctor-actions .op-run,
+.op-doctor-actions .op-back {
+  font-size: 10px;
+  padding: 2px var(--op-space-2);
+}
+
+.op-relink-row {
+  display: flex;
+  gap: var(--op-space-2);
+  margin-top: var(--op-space-1);
+}
+
+.op-relink-input {
+  flex: 1;
+  padding: var(--op-space-1) var(--op-space-2);
+  background: var(--op-bg-input);
+  border: 1px solid var(--op-border);
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+  font-family: var(--op-mono);
+  font-size: 10px;
+}
+
+.op-relink-btn {
+  padding: var(--op-space-1) var(--op-space-2);
+  background: var(--op-bg-input);
+  border: 1px solid var(--op-border);
+  border-radius: var(--op-radius);
+  color: var(--op-text);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.op-relink-btn:hover {
+  border-color: var(--op-accent);
+}

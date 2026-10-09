@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMockAeEnv } from "@operator/ae-mock";
+import { createMockAeEnv, MockFile } from "@operator/ae-mock";
 import { handlerTable } from "../src/index.js";
 import { createOperator, type OperatorEnv } from "../src/core/operator.js";
 import * as mirror from "../src/core/protocol.js";
@@ -39,7 +39,8 @@ function makeEnv(appOverride?: Partial<ReturnType<typeof createMockAeEnv>["app"]
     eventsAvailable: true,
     emit: (type, json) => emitted.push({ type, json }),
     scheduleTick: (id, fn) => ticks.push({ id, fn }),
-    now: () => Date.now()
+    now: () => Date.now(),
+    makeFile: (p) => new MockFile(p)
   };
   const op = createOperator(env, handlerTable());
   return { op, mock: { ...mock, app }, env, emitted, ticks };

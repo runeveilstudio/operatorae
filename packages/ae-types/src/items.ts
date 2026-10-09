@@ -29,6 +29,8 @@ export interface AeItem {
   parentFolder: AeFolderItem | null;
   /** Percent-encoded URI string, or "" for folder/solid/composition. */
   file: AeFile | null;
+  /** Deletes the item from the project. AE throws when the item is in use. */
+  remove(): void;
 }
 
 export interface AeFolderItem extends AeItem {
@@ -49,6 +51,8 @@ export interface AeFootageItem extends AeItem {
   frameRate: number;
   hasVideo: boolean;
   hasAudio: boolean;
+  /** Re-points the main source at `file` (the relink primitive, docs/03 §1). */
+  replace(file: AeFile): void;
 }
 
 export interface AeMarkerValue {

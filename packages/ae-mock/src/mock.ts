@@ -9,7 +9,7 @@ import type {
 } from "@operator/ae-types";
 import { MockComp } from "./comp.js";
 import { MockFile } from "./file.js";
-import { MockFolder, MockFootage, walkItems } from "./item.js";
+import { MockFolder, MockFootage, MockItem, walkItems } from "./item.js";
 import { MockRenderQueue } from "./render.js";
 import type { MockFootageSpec, MockProjectSpec } from "./spec.js";
 
@@ -79,6 +79,7 @@ export class MockProjectImpl implements AeProject {
     this._all.push(item);
     this._root.push(item);
     item.parentFolder = null;
+    (item as MockItem)._owner = this;
   }
 
   /** Register an item inside a folder. */
@@ -86,6 +87,7 @@ export class MockProjectImpl implements AeProject {
     this._all.push(item);
     folder._items.push(item);
     item.parentFolder = folder;
+    (item as MockItem)._owner = this;
   }
 
   get fileURI(): string {
