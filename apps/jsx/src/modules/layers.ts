@@ -1,7 +1,7 @@
 import type { AeCompItem, AeLayer } from "@operator/ae-types";
 import { CAPABILITIES, TASK_ERROR_CODES, err } from "../core/protocol.js";
 import { isComp, type Handler, type HandlerCtx } from "../core/operator.js";
-import { optNum, optStr, requireEnum, requireNum, requireObj } from "../core/validate.js";
+import { optEnum, optNum, optStr, requireEnum, requireNum, requireObj } from "../core/validate.js";
 
 export interface RenamePattern {
   mode: "prefix" | "suffix" | "replace" | "number";
@@ -103,6 +103,42 @@ function layersForScope(ctx: HandlerCtx): { comp: AeCompItem; layers: AeLayer[] 
   return { comp: comp, layers: layers };
 }
 
+/**
+ * Numeric-aware name comparison ("alpha_2" sorts before "alpha_10"), case-insensitive,
+ * index-tie-broken so equal keys keep their current relative order.
+ */
+export function naturalCompare(a: string, b: string): number {
+  const lowerA = a.toLowerCase();
+  const lowerB = b.toLowerCase();
+  let i = 0;
+  let j = 0;
+  while (i < lowerA.length && j < lowerB.length) {
+    const ca = lowerA.charAt(i);
+    const cb = lowerB.charAt(j);
+    if (ca >= "0" && ca <= "9" && cb >= "0" && cb <= "9") {
+      let ai = i;
+      while (ai < lowerA.length && lowerA.charAt(ai) >= "0" && lowerA.charAt(ai) <= "9") ai++;
+      let bj = j;
+      while (bj < lowerB.length && lowerB.charAt(bj) >= "0" && lowerB.charAt(bj) <= "9") bj++;
+      const na = lowerA.substring(i, ai);
+      const nb = lowerB.substring(j, bj);
+      // Same length compares lexically (== numerically for digits).
+      if (na.length !== nb.length) return na.length < nb.length ? -1 : 1;
+      if (na !== nb) return na < nb ? -1 : 1;
+      i = ai;
+      j = bj;
+    } else {
+      if (ca !== cb) return ca < cb ? -1 : 1;
+      i++;
+      j++;
+    }
+  }
+  const restA = lowerA.length - i;
+  const restB = lowerB.length - j;
+  if (restA !== restB) return restA < restB ? -1 : 1;
+  return 0;
+}
+
 export function layersHandlers(): Record<string, Handler> {
   return {
     renameBatch: {
@@ -159,6 +195,74 @@ export function layersHandlers(): Record<string, Handler> {
               skipped: skipped,
               preview: ctx.dryRun ? preview : null,
               remainingAfterCancel: outcome.cancelled ? outcome.total - outcome.done : 0
+            };
+          }
+        };
+      }
+    },
+
+    /** Reorder the layer stack: natural name sort (asc/desc) or reverse. */
+    sortBatch: {
+      kind: "batch",
+      capability: CAPABILITIES.PROJECT,
+      mutating: true,
+      plan: (ctx: HandlerCtx) => {
+        const comp =
+          ctx.args.compId !== undefined && ctx.args.compId !== null
+            ? findCompById(ctx, requireNum(ctx.args, "compId"))
+            : requireActiveComp(ctx);
+        const order = optEnum(ctx.args, "order", ["name-asc", "name-desc", "reverse"], "name-asc");
+
+        const current: AeLayer[] = [];
+        for (let i = 1; i <= comp.numLayers; i++) current.push(comp.layer(i));
+
+        const indexed: Array<{ layer: AeLayer; at: number }> = [];
+        for (let i = 0; i < current.length; i++) indexed.push({ layer: current[i], at: i });
+        if (order === "name-asc") {
+          indexed.sort((a, b) => naturalCompare(a.layer.name, b.layer.name) || a.at - b.at);
+        } else if (order === "name-desc") {
+          indexed.sort((a, b) => naturalCompare(b.layer.name, a.layer.name) || a.at - b.at);
+        } else {
+          indexed.reverse();
+        }
+        const sorted: AeLayer[] = [];
+        for (let i = 0; i < indexed.length; i++) sorted.push(indexed[i].layer);
+
+        const namesOf = (ls: AeLayer[]): string[] => {
+          const out: string[] = [];
+          for (let i = 0; i < ls.length; i++) out.push(ls[i].name);
+          return out;
+        };
+        const from = namesOf(current);
+        const to = namesOf(sorted);
+        let changed = false;
+        if (from.length !== to.length) changed = true;
+        else for (let i = 0; i < from.length; i++) if (from[i] !== to[i]) changed = true;
+
+        // moveToBeginning in reverse produces the target top-to-bottom order.
+        const units: AeLayer[] = [];
+        for (let i = changed ? sorted.length - 1 : -1; i >= 0; i--) units.push(sorted[i]);
+        let moved = 0;
+        return {
+          items: units,
+          label: 'Sorting layers in "' + comp.name + '"',
+          work: (raw: unknown) => {
+            const layer = raw as AeLayer;
+            if (ctx.dryRun) return;
+            layer.moveToBeginning();
+            moved++;
+          },
+          collect: (outcome) => {
+            return {
+              comp: { id: comp.id, name: comp.name },
+              order: order,
+              dryRun: ctx.dryRun,
+              total: outcome.total,
+              processed: outcome.done,
+              moved: ctx.dryRun ? 0 : moved,
+              alreadySorted: changed !== true,
+              from: ctx.dryRun ? from : null,
+              to: ctx.dryRun ? to : null
             };
           }
         };

@@ -49,6 +49,22 @@ export function createCatalog(): CommandRegistry {
       ]
     },
     {
+      id: "layers.sortBatch",
+      title: "Sort layers",
+      module: "layers",
+      fn: "sortBatch",
+      scope: "comp",
+      mutating: true,
+      batch: true,
+      category: "Layers",
+      description:
+        "Reorder the stack: numeric-aware name sort (asc/desc) or reverse. Defaults to the active comp, name ascending. Dry-run previews the from→to order; one undo step reverts.",
+      params: [
+        { key: "order", type: "enum", enumValues: ["name-asc", "name-desc", "reverse"], def: "name-asc" },
+        { key: "compId", type: "number", hint: "defaults to the active comp" }
+      ]
+    },
+    {
       id: "assets.doctorScan",
       title: "Asset Doctor: scan project",
       module: "assets",

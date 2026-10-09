@@ -51,6 +51,8 @@ export interface AeLayer {
   property(nameOrIndex: string | number): AeProperty;
   numEffects: number;
   effect(nameOrIndex: string | number): AeEffect;
+  /** Moves this layer to the top of the stack (index 1). */
+  moveToBeginning(): void;
   remove(): void;
 }
 

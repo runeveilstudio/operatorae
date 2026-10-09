@@ -44,6 +44,23 @@ export function requireEnum(args: Args | null | undefined, key: string, values: 
   );
 }
 
+/** Like requireEnum but falls back to `def` when the key is absent. */
+export function optEnum(args: Args | null | undefined, key: string, values: string[], def: string): string {
+  const a = args === null || typeof args !== "object" ? {} : args;
+  const v = a[key];
+  if (v === undefined || v === null) return def;
+  if (typeof v !== "string") {
+    throw err(TASK_ERROR_CODES.ARG_INVALID, 'Argument "' + key + '" must be one of: ' + values.join(", "));
+  }
+  for (let i = 0; i < values.length; i++) {
+    if (v === values[i]) return v;
+  }
+  throw err(
+    TASK_ERROR_CODES.ARG_INVALID,
+    'Argument "' + key + '" must be one of: ' + values.join(", ")
+  );
+}
+
 export function requireObj(args: Args | null | undefined, key: string): Args {
   const a = args === null || typeof args !== "object" ? {} : args;
   const v = a[key];

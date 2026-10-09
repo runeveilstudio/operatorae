@@ -143,6 +143,17 @@ export class MockLayer implements AeLayer {
       this.owner._layers[i].index = i + 1;
     }
   }
+
+  /** Top of the stack, then re-index so `layer(i)` stays 1-based. */
+  moveToBeginning(): void {
+    const at = this.owner._layers.indexOf(this);
+    if (at === -1) return;
+    this.owner._layers.splice(at, 1);
+    this.owner._layers.unshift(this);
+    for (let i = 0; i < this.owner._layers.length; i++) {
+      this.owner._layers[i].index = i + 1;
+    }
+  }
 }
 
 /** Resolve `parentIndex` hints into real layer references once a comp is built. */
