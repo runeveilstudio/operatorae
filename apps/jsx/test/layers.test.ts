@@ -159,3 +159,86 @@ describe("layers.sortBatch", () => {
     expect(badId.errors[0].code).toBe(mirror.TASK_ERROR_CODES.ARG_INVALID);
   });
 });
+
+describe("layers.selectByPattern", () => {
+  const select = async (id: string, args?: unknown, meta?: unknown) => {
+    const env = makeEnv();
+    const first = JSON.parse(env.op.run(request(id, "layers", "selectByPattern", args, meta)));
+    if ((first as mirror.TaskAccepted).accepted === true) {
+      await pump(env.ticks);
+      const done = JSON.parse(
+        env.emitted.find((e) => e.type === mirror.TASK_DONE_EVENT)!.json
+      ) as mirror.TaskResult & { data: Record<string, unknown> };
+      return { result: done, mock: env.mock };
+    }
+    return { result: first as mirror.TaskResult, mock: env.mock };
+  };
+  const selectedNames = (mock: ReturnType<typeof makeEnv>["mock"]): string[] =>
+    mock.comps[0].selectedLayers.map((l) => l.name);
+
+  it("selects name matches case-insensitively and replaces the selection", async () => {
+    const { result, mock } = await select("p1", { find: "ALPHA" });
+    expect(result.ok).toBe(true);
+    expect(result.data.selected).toBe(3);
+    expect(selectedNames(mock)).toEqual(["alpha_2", "alpha_10", "alpha_1"]);
+    expect(mock.undoLog).toEqual(["begin:OPERATOR: layers.selectByPattern", "end"]);
+  });
+
+  it("supports regex matching, add-mode and case sensitivity", async () => {
+    const regex = await select("p2", { find: "^a.*_1$", regex: true });
+    expect(regex.result.data.selected).toBe(1);
+    expect(selectedNames(regex.mock)).toEqual(["alpha_1"]);
+
+    const addEnv = makeEnv();
+    addEnv.mock.comps[0]._layers[0].selected = true; // hero
+    const ack = JSON.parse(
+      addEnv.op.run(request("p3", "layers", "selectByPattern", { find: "bg", mode: "add" }))
+    ) as mirror.TaskAccepted;
+    await pump(addEnv.ticks);
+    expect(addEnv.mock.comps[0].selectedLayers.map((l) => l.name)).toEqual(["hero", "bg"]);
+
+    const cs = await select("p4", { find: "Alpha", caseSensitive: true });
+    expect(cs.result.data.selected).toBe(0);
+  });
+
+  it("previews in dry-run and rejects bad args", async () => {
+    const dry = await select("p5", { find: "alpha" }, { dryRun: true });
+    expect(dry.result.data.selected).toBe(0);
+    expect(dry.result.data.preview).toEqual(["alpha_2", "alpha_10", "alpha_1"]);
+    expect(dry.mock.comps[0].selectedLayers.length).toBe(0);
+
+    const noFind = await select("p6", {});
+    expect(noFind.result.ok).toBe(false);
+    expect(noFind.result.errors[0].code).toBe(mirror.TASK_ERROR_CODES.ARG_INVALID);
+
+    const badRegex = await select("p7", { find: "(", regex: true });
+    expect(badRegex.result.ok).toBe(false);
+    expect(badRegex.result.errors[0].message).toMatch(/Invalid regex/);
+  });
+});
+
+describe("layers.deselectAll", () => {
+  it("clears the selection, previews in dry-run", async () => {
+    const env = makeEnv();
+    env.mock.comps[0]._layers[0].selected = true;
+    env.mock.comps[0]._layers[2].selected = true;
+    const dry = JSON.parse(env.op.run(request("q1", "layers", "deselectAll", null, { dryRun: true }))) as mirror.TaskAccepted;
+    await pump(env.ticks);
+    let done = JSON.parse(
+      env.emitted.find((e) => e.type === mirror.TASK_DONE_EVENT)!.json
+    ) as mirror.TaskResult & { data: Record<string, unknown> };
+    expect(done.ok).toBe(true);
+    expect(done.data.preview).toEqual(["hero", "alpha_2"]);
+    expect(env.mock.comps[0].selectedLayers.length).toBe(2);
+
+    const commit = JSON.parse(env.op.run(request("q2", "layers", "deselectAll"))) as mirror.TaskAccepted;
+    await pump(env.ticks);
+    done = JSON.parse(
+      env.emitted.filter((e) => e.type === mirror.TASK_DONE_EVENT)[1].json
+    ) as mirror.TaskResult & { data: Record<string, unknown> };
+    expect(done.ok).toBe(true);
+    expect(done.data.deselected).toBe(2);
+    expect(env.mock.comps[0].selectedLayers.length).toBe(0);
+    void dry;
+  });
+});

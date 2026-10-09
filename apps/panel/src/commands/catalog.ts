@@ -65,6 +65,37 @@ export function createCatalog(): CommandRegistry {
       ]
     },
     {
+      id: "layers.selectByPattern",
+      title: "Select layers by name pattern",
+      module: "layers",
+      fn: "selectByPattern",
+      scope: "comp",
+      mutating: true,
+      batch: true,
+      category: "Layers",
+      description:
+        "Select layers whose names contain a find string (or match a regex). Replace or add to the current selection; case-insensitive by default.",
+      params: [
+        { key: "find", type: "string", required: true },
+        { key: "regex", type: "boolean", def: false },
+        { key: "caseSensitive", type: "boolean", def: false },
+        { key: "mode", type: "enum", enumValues: ["replace", "add"], def: "replace" },
+        { key: "compId", type: "number", hint: "defaults to the active comp" }
+      ]
+    },
+    {
+      id: "layers.deselectAll",
+      title: "Deselect all layers",
+      module: "layers",
+      fn: "deselectAll",
+      scope: "comp",
+      mutating: true,
+      batch: true,
+      category: "Layers",
+      description: "Clear the active comp's layer selection (or a targeted comp by id).",
+      params: [{ key: "compId", type: "number", hint: "defaults to the active comp" }]
+    },
+    {
       id: "assets.doctorScan",
       title: "Asset Doctor: scan project",
       module: "assets",

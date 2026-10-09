@@ -1,7 +1,7 @@
 import type { AeCompItem, AeLayer } from "@operator/ae-types";
 import { CAPABILITIES, TASK_ERROR_CODES, err } from "../core/protocol.js";
 import { isComp, type Handler, type HandlerCtx } from "../core/operator.js";
-import { optEnum, optNum, optStr, requireEnum, requireNum, requireObj } from "../core/validate.js";
+import { optEnum, optNum, optStr, requireEnum, requireNum, requireObj, requireStr } from "../core/validate.js";
 
 export interface RenamePattern {
   mode: "prefix" | "suffix" | "replace" | "number";
@@ -263,6 +263,113 @@ export function layersHandlers(): Record<string, Handler> {
               alreadySorted: changed !== true,
               from: ctx.dryRun ? from : null,
               to: ctx.dryRun ? to : null
+            };
+          }
+        };
+      }
+    },
+
+    /** Selection helper: select layers whose names match a find/regex. */
+    selectByPattern: {
+      kind: "batch",
+      capability: CAPABILITIES.PROJECT,
+      mutating: true,
+      plan: (ctx: HandlerCtx) => {
+        const find = requireStr(ctx.args, "find");
+        if (find === "") {
+          throw err(TASK_ERROR_CODES.ARG_INVALID, 'Argument "find" must be non-empty');
+        }
+        const regex = ctx.args.regex === true;
+        const caseSensitive = ctx.args.caseSensitive === true;
+        const mode = optEnum(ctx.args, "mode", ["replace", "add"], "replace");
+        let matcher: RegExp = null as unknown as RegExp;
+        if (regex) {
+          try {
+            matcher = new RegExp(find, caseSensitive ? "" : "i");
+          } catch (e) {
+            throw err(TASK_ERROR_CODES.ARG_INVALID, "Invalid regex pattern: " + String(e));
+          }
+        }
+        const findLower = caseSensitive ? find : find.toLowerCase();
+        const comp =
+          ctx.args.compId !== undefined && ctx.args.compId !== null
+            ? findCompById(ctx, requireNum(ctx.args, "compId"))
+            : requireActiveComp(ctx);
+
+        const layers: AeLayer[] = [];
+        for (let i = 1; i <= comp.numLayers; i++) layers.push(comp.layer(i));
+        const preview: string[] = [];
+        let selectedCount = 0;
+        return {
+          items: layers,
+          label: 'Selecting layers in "' + comp.name + '"',
+          work: (raw: unknown) => {
+            const layer = raw as AeLayer;
+            const name = layer.name;
+            const hit = regex
+              ? matcher.test(name)
+              : (caseSensitive ? name : name.toLowerCase()).indexOf(findLower) !== -1;
+            if (hit) {
+              if (ctx.dryRun) {
+                preview.push(name);
+                return;
+              }
+              layer.selected = true;
+              selectedCount++;
+            } else if (mode === "replace" && ctx.dryRun !== true) {
+              layer.selected = false;
+            }
+          },
+          collect: (outcome) => {
+            return {
+              comp: { id: comp.id, name: comp.name },
+              find: find,
+              regex: regex,
+              mode: mode,
+              dryRun: ctx.dryRun,
+              total: outcome.total,
+              selected: ctx.dryRun ? 0 : selectedCount,
+              preview: ctx.dryRun ? preview : null
+            };
+          }
+        };
+      }
+    },
+
+    /** Selection helper: clear the comp's selection. */
+    deselectAll: {
+      kind: "batch",
+      capability: CAPABILITIES.PROJECT,
+      mutating: true,
+      plan: (ctx: HandlerCtx) => {
+        const comp =
+          ctx.args.compId !== undefined && ctx.args.compId !== null
+            ? findCompById(ctx, requireNum(ctx.args, "compId"))
+            : requireActiveComp(ctx);
+        const layers: AeLayer[] = [];
+        for (let i = 1; i <= comp.numLayers; i++) layers.push(comp.layer(i));
+        const preview: string[] = [];
+        let deselected = 0;
+        return {
+          items: layers,
+          label: 'Deselecting layers in "' + comp.name + '"',
+          work: (raw: unknown) => {
+            const layer = raw as AeLayer;
+            if (layer.selected !== true) return;
+            if (ctx.dryRun) {
+              preview.push(layer.name);
+              return;
+            }
+            layer.selected = false;
+            deselected++;
+          },
+          collect: (outcome) => {
+            return {
+              comp: { id: comp.id, name: comp.name },
+              dryRun: ctx.dryRun,
+              total: outcome.total,
+              deselected: ctx.dryRun ? 0 : deselected,
+              preview: ctx.dryRun ? preview : null
             };
           }
         };
