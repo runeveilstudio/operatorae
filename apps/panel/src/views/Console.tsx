@@ -23,7 +23,8 @@ interface Props {
 
 function dataOf(outcome: RunOutcome): { display: string; result: unknown } | null {
   const data = outcome.result.data as { display?: string; result?: unknown } | null;
-  return data ?? null;
+  if (data === null) return null;
+  return { display: data.display ?? "undefined", result: data.result ?? null };
 }
 
 export default function Console({ runner }: Props) {
